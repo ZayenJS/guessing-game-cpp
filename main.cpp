@@ -2,47 +2,45 @@
 #include <stdlib.h>
 #include <time.h>
 #include <signal.h>
-#include "exit.h"
+#include "functions.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
+using std::string;
 
 int main()
 {
   signal(SIGINT, signalCallbackHandler);
+
   srand(time(NULL));
+
   int min = 0;
   int max = 100;
   int numberToGuess = rand() % max + 1;
   int userResponse;
+  bool validUserResponse = true;
+  int tries = 0;
+  string message = "Enter a number between " + std::to_string(min) + " and " + std::to_string(max) + ": ";
 
   cout << "Let's play a game !\n";
-  cout << "Enter a number between " << min << " and " << max << ": ";
-  cin >> userResponse;
-  int tries = 1;
+  askUser(message, &userResponse, &tries);
 
   while (numberToGuess != userResponse)
   {
-    cout << "\nOops, try again, ";
+    validUserResponse = checkLimits(&userResponse, &min, &max);
 
-    if (numberToGuess > userResponse)
+    if (validUserResponse)
     {
-      min = min > userResponse ? min : userResponse;
-      cout << "it's more !\n";
-    }
-    else if (numberToGuess < userResponse)
-    {
-      max = max < userResponse ? max : userResponse;
-      cout << "it's less !\n";
+      checkUserResponse(&numberToGuess, &userResponse, &min, &max);
     }
 
-    cout << "Enter another number between " << min << " and " << max << ": ";
-    cin >> userResponse;
-    tries++;
+    message = "Enter another number between " + std::to_string(min) + " and " + std::to_string(max) + ": ";
+
+    askUser(message, &userResponse, &tries);
   }
 
-  cout << "Congrats! You found the number in " << tries << " tries!" << endl;
+  gameOver(&tries);
 
   return 0;
 }
