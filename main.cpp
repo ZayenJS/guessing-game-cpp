@@ -24,7 +24,7 @@ int main()
 
   while (numberToGuess != userResponse)
   {
-    cout << "\nOups, try again, ";
+    cout << "\nOops, try again, ";
 
     if (numberToGuess > userResponse)
     {
